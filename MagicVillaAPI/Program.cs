@@ -1,5 +1,8 @@
+using MagicVillaAPI;
 using MagicVillaAPI.Customlog;
 using MagicVillaAPI.Data;
+using MagicVillaAPI.Repository;
+using MagicVillaAPI.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -11,6 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(option => { 
 	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+
+/******* Add Repository *******/
+builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
+
+/******* Add AutoMapper *******/
+/** Add support for converting DTOS to Models **/
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+/******* Add AutoMapper *******/
+
+
 /******* Serilog Logging *******/
 // Configure Serilog
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
