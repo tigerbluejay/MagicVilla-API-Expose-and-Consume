@@ -130,7 +130,7 @@ namespace MagicVillaAPI.Controllers
 					!= null)
 				{
 					// villa name is not unique
-					ModelState.AddModelError("CustomError", "Villa already Exists");
+					ModelState.AddModelError("ErrorMessages", "Villa already Exists");
 					return BadRequest(ModelState);
 				}
 

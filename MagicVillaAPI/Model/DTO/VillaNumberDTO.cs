@@ -11,5 +11,7 @@ namespace MagicVillaAPI.Model.DTO
 		[Required]
 		public int VillaID { get; set; }
 
+		public VillaDTO Villa { get; set; }
+
 	}
 }

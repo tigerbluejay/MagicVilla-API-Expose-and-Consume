@@ -15,6 +15,10 @@ builder.Services.AddHttpClient<IVillaService, VillaService>();
 /***** Register VillaService to Dependency Injection ****/
 builder.Services.AddScoped<IVillaService, VillaService>();
 
+/***** Register httpClient on the VillaNumberService ****/
+builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
+/***** Register VillaNumberService to Dependency Injection ****/
+builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
 
 var app = builder.Build();
 

@@ -34,11 +34,11 @@ namespace MagicVillaAPI.Controllers
 
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult<APIResponse>> GetVillas()
+		public async Task<ActionResult<APIResponse>> GetVillaNumbers()
 		{
 			try
 			{
-				IEnumerable<VillaNumber> villaNumberList = await _dbVillaNumber.GetAllAsync();
+				IEnumerable<VillaNumber> villaNumberList = await _dbVillaNumber.GetAllAsync(includeProperties:"Villa");
 				_response.Result = _mapper.Map<List<VillaNumberDTO>>(villaNumberList);
 				_response.StatusCode = HttpStatusCode.OK;
 				return Ok(_response);
@@ -99,7 +99,7 @@ namespace MagicVillaAPI.Controllers
 					(u => u.VillaNo == villaNumberCreateDTO.VillaNo)
 					!= null)
 				{
-					ModelState.AddModelError("CustomError", "Villa Number already Exists");
+					ModelState.AddModelError("ErrorMessages", "Villa Number already Exists");
 					return BadRequest(ModelState);
 				}
 
@@ -108,7 +108,7 @@ namespace MagicVillaAPI.Controllers
 				// which is passed in the Request is valid or not
 				if (await _dbVilla.GetAsync(u => u.Id == villaNumberCreateDTO.VillaID) == null)
 				{
-					ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
+					ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
 					return BadRequest(ModelState);
 				}
 
@@ -186,7 +186,7 @@ namespace MagicVillaAPI.Controllers
 				// which is passed in the Request is valid or not
 				if (await _dbVilla.GetAsync(u => u.Id == villaNumberUpdateDTO.VillaID) == null)
 				{
-					ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
+					ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
 					return BadRequest(ModelState);
 				}
 
