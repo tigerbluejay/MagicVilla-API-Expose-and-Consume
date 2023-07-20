@@ -5,6 +5,7 @@ using MagicVillaAPI.Data;
 using MagicVillaAPI.Model;
 using MagicVillaAPI.Model.DTO;
 using MagicVillaAPI.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,10 @@ namespace MagicVillaAPI.Controllers
 		}
 
 		[HttpGet]
+		[Authorize] // only an authorized user can access this endpoint 
 		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<ActionResult<APIResponse>> GetVillas()
 		{
 			_logger.LogInformation("Getting all Villas");
@@ -68,6 +72,9 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<ActionResult<APIResponse>> GetVilla(int id)
 		{
 			try
@@ -181,6 +188,11 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[Authorize(Roles = "custom")] // only authorized users with the Role of custom can access this endpoint.
+									  // if a user with the role of admin tries to access this endpoint they will
+									  // be blocked and met with 403 Forbidden
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		// we use IActionResult so we don't have to specify what we return
 		public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
 		{
