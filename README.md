@@ -1,7 +1,7 @@
 # MagicVilla
 This project is my actual full implementation of DotNetMastery's Magic Villa API and Magic Villa MVC.
 
-This dual solution consisting of two projects (plus a shared Utilities project containing only static details) consists of an API Project where we expose or serve API endpoints for a lodging service, and an MVC project that consumes the API.
+This dual solution consisting of two projects includes an API where we expose or serve API endpoints for a lodging service, and an MVC project that consumes the API.
 
 ## MagicVillaAPI Project - Serving or Exposing the API
 
