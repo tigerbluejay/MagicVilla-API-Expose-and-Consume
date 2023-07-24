@@ -5,9 +5,11 @@ using MagicVillaAPI.Data;
 using MagicVillaAPI.Model;
 using MagicVillaAPI.Model.DTO;
 using MagicVillaAPI.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Net;
 
 namespace MagicVillaAPI.Controllers
@@ -91,7 +93,8 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> CreateVillaNumber([FromBody] VillaNumberCreateDTO villaNumberCreateDTO)
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> CreateVillaNumber([FromBody] VillaNumberCreateDTO villaNumberCreateDTO)
 		{
 			try
 			{
@@ -140,7 +143,8 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<APIResponse>> DeleteVillaNumber(int id)
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> DeleteVillaNumber(int id)
 		{
 			try
 			{
@@ -171,7 +175,8 @@ namespace MagicVillaAPI.Controllers
 		[HttpPut("{id:int}", Name = "UpdateVillaNumber")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDTO villaNumberUpdateDTO)
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDTO villaNumberUpdateDTO)
 		{
 			try
 			{

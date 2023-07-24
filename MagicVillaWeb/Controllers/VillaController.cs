@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using MagicVillaUtilities;
 using MagicVillaWeb.Models;
 using MagicVillaWeb.Models.DTO;
 using MagicVillaWeb.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -23,7 +25,7 @@ namespace MagicVillaWeb.Controllers
 		{
 			List<VillaDTO> list = new();
 
-			var response = await _villaService.GetAllAsync<APIResponse>();
+			var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				list = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -31,6 +33,8 @@ namespace MagicVillaWeb.Controllers
 			return View(list);
 		}
 
+		[Authorize (Roles ="admin")] // if someone wants to create a Villa it has to be authorized
+		// and have a role of admin.
 		public async Task<IActionResult> CreateVilla()
 		{
 			return View();
@@ -38,11 +42,12 @@ namespace MagicVillaWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CreateVilla(VillaCreateDTO model)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateVilla(VillaCreateDTO model)
 		{
 			if (ModelState.IsValid) // ModelState refers to all Data Annotation validations
 			{
-				var response = await _villaService.CreateAsync<APIResponse>(model);
+				var response = await _villaService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Villa created successfully";
@@ -53,10 +58,11 @@ namespace MagicVillaWeb.Controllers
 			return View(model);
 		}
 
-		public async Task<IActionResult> UpdateVilla(int villaId)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> UpdateVilla(int villaId)
 		{
 			// before we update we need to get the object
-			var response = await _villaService.GetAsync<APIResponse>(villaId);
+			var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				VillaDTO model = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
@@ -68,11 +74,12 @@ namespace MagicVillaWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> UpdateVilla(VillaUpdateDTO model)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> UpdateVilla(VillaUpdateDTO model)
 		{
 			if (ModelState.IsValid) // ModelState refers to all Data Annotation validations
 			{
-				var response = await _villaService.UpdateAsync<APIResponse>(model);
+				var response = await _villaService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
 				if (response != null && response.IsSuccess)
 				{
 					TempData["success"] = "Villa updated successfully";
@@ -83,10 +90,11 @@ namespace MagicVillaWeb.Controllers
 			return View(model);
 		}
 
-		public async Task<IActionResult> DeleteVilla(int villaId)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteVilla(int villaId)
 		{
 			// before we update we need to get the object
-			var response = await _villaService.GetAsync<APIResponse>(villaId);
+			var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				VillaDTO model = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
@@ -97,9 +105,10 @@ namespace MagicVillaWeb.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteVilla(VillaDTO model)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteVilla(VillaDTO model)
 		{
-			var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
+			var response = await _villaService.DeleteAsync<APIResponse>(model.Id, HttpContext.Session.GetString(SD.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				TempData["success"] = "Villa deleted successfully";

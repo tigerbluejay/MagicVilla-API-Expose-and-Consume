@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using MagicVillaUtilities;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpAcc
+@*we inject the context accessor object in order to be able to determine if we need to display
+the logout, login and register li elements below, depending on the state of the session
+this is simlar to what we do in the controller dependency injecting the context to access sessions
+*@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,9 +37,23 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Number</a>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+@*                        if these two conditions are met then the user is logged in*@
+                        @if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null &&
+                             httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0)
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Logout</a>
+                        </li>
+                        } else {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
+                        </li>
+                        }
                     </ul>
                 </div>
             </div>

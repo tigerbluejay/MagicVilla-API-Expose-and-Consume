@@ -3,6 +3,7 @@ using MagicVillaWeb.Services.Interfaces;
 using Newtonsoft.Json;
 using MagicVillaUtilities;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace MagicVillaWeb.Services
 {
@@ -58,6 +59,13 @@ namespace MagicVillaWeb.Services
 				/*---- PROCESS THE RESPONSE --- */
 
 				HttpResponseMessage apiResponse = null;
+
+				if (!string.IsNullOrEmpty(apiRequest.Token))
+				{
+					// when we are calling the api we are passing the token.
+					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+				}
+
 
 				//!!!!!! this is the key point for debugging every call to the API
 				apiResponse = await client.SendAsync(message); // we call the API endpoint

@@ -35,7 +35,6 @@ namespace MagicVillaAPI.Controllers
 		}
 
 		[HttpGet]
-		[Authorize] // only an authorized user can access this endpoint 
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -72,7 +71,6 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		[Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<ActionResult<APIResponse>> GetVilla(int id)
@@ -114,7 +112,8 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO villaCreateDTO)
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO villaCreateDTO)
 		{
 			try
 			{
@@ -188,13 +187,14 @@ namespace MagicVillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		[Authorize(Roles = "custom")] // only authorized users with the Role of custom can access this endpoint.
+		//[Authorize(Roles = "custom")] // only authorized users with the Role of custom can access this endpoint.
 									  // if a user with the role of admin tries to access this endpoint they will
 									  // be blocked and met with 403 Forbidden
 		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		// we use IActionResult so we don't have to specify what we return
-		public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
+        // we use IActionResult so we don't have to specify what we return
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
 		{
 			try
 			{
@@ -226,7 +226,8 @@ namespace MagicVillaAPI.Controllers
 		[HttpPut("{id:int}", Name = "UpdateVilla")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
+        [Authorize(Roles = "admin")] // only authorized users with the Role of admin can access this endpoint.
+        public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
 		{
 			try
 			{
