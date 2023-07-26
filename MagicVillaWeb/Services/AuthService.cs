@@ -21,7 +21,7 @@ namespace MagicVillaWeb.Services
 			{
 				ApiType = SD.ApiType.POST,
 				Data = obj,
-				Url = villaUrl + "/api/UsersAuth/login" // the magic string portioin of the url
+				Url = villaUrl + "/api/v1/UsersAuth/login" // the magic string portioin of the url
 													    // is defined in the
 													    // UsersController of the API
 														// plus the method name which is "login"
@@ -34,11 +34,11 @@ namespace MagicVillaWeb.Services
 			{
 				ApiType = SD.ApiType.POST,
 				Data = obj,
-				Url = villaUrl + "/api/UsersAuth/register" // the magic string portioin of the url
-														// is defined in the
-														// UsersController of the API
-														// plus the method name which is "login"
-			});
+				Url = villaUrl + "/api/v1/UsersAuth/register" // the magic string portioin of the url
+                                                             // is defined in the
+                                                             // UsersController of the API
+                                                             // plus the method name which is "login"
+            });
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace MagicVillaWeb.Services
 			{
 				ApiType = SD.ApiType.POST,
 				Data = dto,
-				Url = villaUrl + "/api/villaAPI", // here villaUrl contains the
+				Url = villaUrl + "/api/v1/villaAPI", // here villaUrl contains the
 				Token = token					 // values specified in appSettings.json, what we append is the route
 												 // defined in the API Project's Controller route.
 			});
@@ -33,7 +33,7 @@ namespace MagicVillaWeb.Services
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.DELETE,
-				Url = villaUrl + "/api/villaAPI/" + id, // here we modify the route and append id
+				Url = villaUrl + "/api/v1/villaAPI/" + id, // here we modify the route and append id
 				Token = token
 			});
 		}
@@ -43,7 +43,7 @@ namespace MagicVillaWeb.Services
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = villaUrl + "/api/villaAPI",
+				Url = villaUrl + "/api/v1/villaAPI",
 				Token = token
 			});
 		}
@@ -53,7 +53,7 @@ namespace MagicVillaWeb.Services
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.GET,
-				Url = villaUrl + "/api/villaAPI/" + id, // here we modify the route and append id
+				Url = villaUrl + "/api/v1/villaAPI/" + id, // here we modify the route and append id
 				Token = token
 			});
 		}
@@ -64,7 +64,7 @@ namespace MagicVillaWeb.Services
 			{
 				ApiType = SD.ApiType.PUT,
 				Data = dto,
-				Url = villaUrl + "/api/villaAPI/" + dto.Id,
+				Url = villaUrl + "/api/v1/villaAPI/" + dto.Id,
 				Token = token
 			});
 		}
