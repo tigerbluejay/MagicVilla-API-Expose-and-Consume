@@ -1,9 +1,11 @@
 using MagicVillaAPI;
 using MagicVillaAPI.Customlog;
 using MagicVillaAPI.Data;
+using MagicVillaAPI.Model;
 using MagicVillaAPI.Repository;
 using MagicVillaAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+/******* Add .NET Default Identity Configurations for Scaffolded Identity *******/
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+/******* Add Caching *******/
+builder.Services.AddResponseCaching();
 
 /******* Add Repository *******/
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
@@ -90,7 +97,16 @@ builder.Host.UseSerilog();
 //{
 //	option.ReturnHttpNotAcceptable = true;
 //}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
-builder.Services.AddControllers().AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
+
+/**** Here in AddControllers parenthesis we can add the cache profile ****/
+builder.Services.AddControllers(option =>
+{
+    option.CacheProfiles.Add("Default30",
+        new CacheProfile()
+        {
+            Duration = 30
+        });
+}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 
 namespace MagicVillaAPI.Controllers.v1
 {
@@ -40,7 +41,12 @@ namespace MagicVillaAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> GetVillas()
+        //[ResponseCache(Duration = 30)] // 30 seconds cache
+        [ResponseCache(CacheProfileName = "Default30")] // uses the cache profile in Program.cs
+        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name ="filterOccupancy")]int? occupancy,
+            [FromQuery]string? search, int pageSize= 0, int pageNumber = 1) // we may or may not receive an
+            // occupancy parameter, also we implement the
+            // search filter parameter, the last two parameters correspond to the topic of pagination
         {
             _logger.LogInformation("Getting all Villas");
             _customLogger.Log("Getting all Villas", "");
@@ -52,7 +58,30 @@ namespace MagicVillaAPI.Controllers.v1
 
                 // this used to be the implementation without the repository pattern
                 //IEnumerable<Villa> villaList = await _db.Villas.ToListAsync();
-                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
+
+                /**** FILTER IMPLEMENTATION (in db and in code) *****/
+                IEnumerable<Villa> villaList;
+                // if we receive an occupancy parameter:
+                if (occupancy > 0)
+                {
+                    villaList = await _dbVilla.GetAllAsync(u => u.Occupancy == occupancy, pageSize:pageSize,
+                        pageNumber:pageNumber);
+                } else // we don't receive an occupancy parameter
+                {
+                    villaList = await _dbVilla.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                }
+                
+                // if we receive a search filter parameter we search in the Name field
+                // we are not passing the filter to the db, we are doing it in the code itself.
+                if (!string.IsNullOrEmpty(search)) 
+                {
+                    villaList = villaList.Where(u => u.Name.ToLower().Contains(search.ToLower()));
+                }
+
+                // add pagination to the response header
+                Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -75,6 +104,7 @@ namespace MagicVillaAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ResponseCache(Duration = 30)] // 30 seconds cache. one 30 second cache per id passed in a request
         public async Task<ActionResult<APIResponse>> GetVilla(int id)
         {
             try

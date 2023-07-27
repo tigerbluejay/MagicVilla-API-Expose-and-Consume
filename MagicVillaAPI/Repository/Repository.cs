@@ -35,7 +35,8 @@ namespace MagicVillaAPI.Repository
 			{
 				query = query.Where(filter);
 			}
-			if (includeProperties != null)
+
+            if (includeProperties != null)
 			{
 				// here we are looping through the split properties that are a comma separated list of strings
 				foreach(var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) 
@@ -46,7 +47,8 @@ namespace MagicVillaAPI.Repository
 			return await query.FirstOrDefaultAsync();
 		}
 
-		public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+		public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
+			string? includeProperties = null, int pageSize = 0, int pageNumber = 1)
 		{
 			IQueryable<T> query = dbSet;
 			if (filter != null)
@@ -54,7 +56,21 @@ namespace MagicVillaAPI.Repository
 				query = query.Where(filter);
 			}
 
-			if (includeProperties != null)
+            // apply pagination if pageSize is greater than 0
+            if (pageSize > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100; // do not allow a page size greater than 100
+                }
+                // common pagination algorithm
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+                // if pageSize = 5 and pageNumber = 1, skip 0 records and take the next 5
+                // if pageSize = 5 and pageNumber = 2, skip 5 records and take the next 5
+            }
+
+
+            if (includeProperties != null)
 			{
 				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 				{

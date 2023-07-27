@@ -1,9 +1,11 @@
 ﻿using MagicVillaAPI.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicVillaAPI.Data
 {
-	public class ApplicationDbContext : DbContext
+	//public class ApplicationDbContext : DbContext // when we were not using identity
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser> // since we are now using identity
 	{
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -13,7 +15,9 @@ namespace MagicVillaAPI.Data
         public DbSet<Villa> Villas { get; set; }
 		public DbSet<VillaNumber> VillaNumbers { get; set; }
 
-		public DbSet <LocalUser> LocalUsers { get; set; }
+		public DbSet <LocalUser> LocalUsers { get; set; } // this was for our custom identity implementation
+
+		public DbSet <ApplicationUser>	ApplicationUsers { get; set; } // this is for our scaffolded .NET identity implementation
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

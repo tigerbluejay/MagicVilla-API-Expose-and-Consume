@@ -10,6 +10,8 @@ namespace MagicVillaAPI.Repository.Interfaces
 		Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
 		// we can return the new user that was created in the db.
 		// this is the Repository not the actual answer 200 ok we are sending the client
-		Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO);
-	}
+		//Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO);
+        Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO);
+
+    }
 }
