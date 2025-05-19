@@ -1,7 +1,5 @@
 # MagicVilla
-This project is my actual full implementation of DotNetMastery's Magic Villa API and Magic Villa MVC.
-
-This dual solution consisting of two projects includes an API where we expose or serve API endpoints for a lodging service, and an MVC project that consumes the API.
+MagicVilla is a comprehensive implementation of a RESTful API and MVC client based on the DotNetMastery project series. Built with ASP.NET Core 6 and Entity Framework Core 6, it simulates a lodging service using modern architecture practices such as API versioning, JWT authentication, caching, filtering, logging with SeriLog, and pagination. The solution consists of two projects: MagicVillaAPI, which exposes and manages endpoints for villas and villa units (villa numbers), and MagicVillaWeb, an ASP.NET Core MVC application that consumes the API using service-based architecture. The project emphasizes clean code, the Repository Pattern, DTO mapping via AutoMapper, and separation of concerns—making it an ideal reference for real-world .NET development.
 
 ## MagicVillaAPI Project - Serving or Exposing the API
 
